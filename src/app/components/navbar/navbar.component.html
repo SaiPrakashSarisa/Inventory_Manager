@@ -1,0 +1,18 @@
+<nav class="navbar" [class.collapsed]="isCollapsed">
+  <div class="navbar-content">
+    <ul class="nav-menu">
+      <li *ngFor="let item of menuItems" class="nav-item">
+        <a 
+          [routerLink]="item.route" 
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{exact: item.route === '/dashboard'}"
+          class="nav-link"
+          [title]="isCollapsed ? item.label : ''">
+          <i [class]="item.icon" class="nav-icon"></i>
+          <span class="nav-label" *ngIf="!isCollapsed">{{ item.label }}</span>
+        </a>
+      </li>
+    </ul>
+  </div>
+</nav>
+

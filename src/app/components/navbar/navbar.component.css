@@ -1,0 +1,109 @@
+.navbar {
+  width: 100%;
+  height: 100%;
+  background-color: #f8f9fa;
+  transition: all 0.3s ease;
+  padding: 1rem 0;
+}
+
+.navbar-content {
+  width: 100%;
+  height: 100%;
+}
+
+.nav-menu {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.nav-item {
+  width: 100%;
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  padding: 0.875rem 1.25rem;
+  color: #495057;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  border-left: 3px solid transparent;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  gap: 0.75rem;
+  cursor: pointer;
+}
+
+.nav-link:hover {
+  background-color: #e9ecef;
+  color: #2c3e50;
+  border-left-color: #3498db;
+}
+
+.nav-link.active {
+  background-color: #e3f2fd;
+  color: #1976d2;
+  border-left-color: #1976d2;
+  font-weight: 600;
+}
+
+.nav-icon {
+  font-size: 1.125rem;
+  min-width: 20px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.nav-label {
+  white-space: nowrap;
+  overflow: hidden;
+  transition: opacity 0.2s ease;
+}
+
+/* Collapsed state */
+.navbar.collapsed .nav-link {
+  justify-content: center;
+  padding: 0.875rem;
+}
+
+.navbar.collapsed .nav-label {
+  display: none;
+}
+
+.navbar.collapsed .nav-link {
+  border-left: none;
+  border-radius: 8px;
+  margin: 0 0.5rem;
+  width: calc(100% - 1rem);
+}
+
+.navbar.collapsed .nav-link:hover {
+  border-left-color: transparent;
+}
+
+.navbar.collapsed .nav-link.active {
+  border-left-color: transparent;
+  background-color: #e3f2fd;
+}
+
+/* Mobile view */
+@media (max-width: 767px) {
+  .navbar {
+    padding: 0.75rem 0;
+  }
+
+  .nav-link {
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+  }
+
+  .nav-icon {
+    font-size: 1rem;
+  }
+}
+

@@ -1,0 +1,32 @@
+<header class="header">
+  <div class="header-content">
+    <!-- Left Section: Menu Toggle & Logo -->
+    <div class="header-left">
+      <button 
+        pButton 
+        type="button" 
+        icon="pi pi-bars"
+        class="p-button-text menu-toggle"
+        (click)="onToggleSidebar()"
+        [title]="isCollapsed ? 'Expand Menu' : 'Collapse Menu'">
+      </button>
+      <h1 class="app-logo">Inventory Manager</h1>
+    </div>
+
+    <!-- Right Section: User Info & Logout -->
+    <div class="header-right">
+      <div class="user-info" *ngIf="getCurrentUser()">
+        <span class="user-name">{{ getCurrentUser()?.name || getCurrentUser()?.email }}</span>
+      </div>
+      <button 
+        pButton 
+        type="button" 
+        label="Logout" 
+        icon="pi pi-sign-out"
+        class="p-button-text logout-btn"
+        (click)="onLogout()">
+      </button>
+    </div>
+  </div>
+</header>
+
