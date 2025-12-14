@@ -3,31 +3,63 @@
     <div class="logo-section">
       <h1 class="app-title">Inventory Manager</h1>
     </div>
-    
+
     <div class="auth-buttons">
-      <!-- Login Mode -->
+      <!-- Login Mode  -->
       <ng-container *ngIf="!isSignupMode">
-        <button 
-          pButton 
-          type="button" 
-          label="Login" 
-          class="p-button login-button"
-          (click)="onLogin()">
-        </button>
-        
-        <button 
-          pButton 
-          type="button" 
-          label="Sign in with Google" 
-          icon="pi pi-google"
-          class="p-button-outlined google-button"
-          (click)="onGoogleLogin()">
+        <form [formGroup]="loginForm" class="login-form" (ngSubmit)="onLogin()">
+
+          <!-- Error Message -->
+          <div *ngIf="errorMessage" class="error-message">
+            <p>{{ errorMessage }}</p>
+          </div>
+
+          <!-- Email Field -->
+          <div class="form-field">
+            <label for="loginEmail">Email <span class="required">*</span></label>
+            <input pInputText id="loginEmail" type="email" formControlName="email" placeholder="Enter your email"
+              [class.ng-invalid]="loginEmail?.invalid && loginEmail?.touched">
+            <small class="error-text" *ngIf="loginEmail?.invalid && loginEmail?.touched">
+              <span *ngIf="loginEmail?.errors?.['required']">Email is required</span>
+              <span *ngIf="loginEmail?.errors?.['email']">Enter a valid email</span>
+            </small>
+          </div>
+
+          <!-- Password Field -->
+          <div class="form-field">
+            <label for="loginPassword">Password <span class="required">*</span></label>
+            <p-password id="loginPassword" formControlName="password" placeholder="Enter your password"
+              [toggleMask]="true" [feedback]="false" styleClass="full-width">
+            </p-password>
+            <small class="error-text" *ngIf="loginPassword?.invalid && loginPassword?.touched">
+              <span *ngIf="loginPassword?.errors?.['required']">Password is required</span>
+            </small>
+          </div>
+
+          <!-- Login Button -->
+          <button pButton type="submit" class="p-button login-button full-width"
+            [disabled]="isLoading || loginForm.invalid">
+            <span *ngIf="isLoading">Logging in...</span>
+            <span *ngIf="!isLoading">Login</span>
+          </button>
+        </form>
+
+        <!-- Divider -->
+        <div class="divider">
+          <span>OR</span>
+        </div>
+
+        <!-- Google Login -->
+        <button pButton type="button" label="Continue with Google" icon="pi pi-google"
+          class="p-button-outlined google-button" [disabled]="isLoading" (click)="onGoogleLogin()">
         </button>
 
         <p class="signup-text">
-          New User? <span class="signup-link" (click)="showSignup()">click here to sign up</span>
+          New User?
+          <span class="signup-link" (click)="showSignup()">Create an account</span>
         </p>
       </ng-container>
+      <!-- Login Mode  -->
 
       <!-- Signup Mode -->
       <ng-container *ngIf="isSignupMode">
@@ -40,16 +72,9 @@
           <!-- Name Field -->
           <div class="form-field">
             <label for="name">Name <span class="required">*</span></label>
-            <input 
-              pInputText 
-              id="name"
-              formControlName="name"
-              placeholder="Enter your full name"
-              [class.ng-invalid]="name?.invalid && name?.touched"
-              [class.ng-dirty]="name?.dirty">
-            <small 
-              class="error-text" 
-              *ngIf="name?.invalid && name?.touched">
+            <input pInputText id="name" formControlName="name" placeholder="Enter your full name"
+              [class.ng-invalid]="name?.invalid && name?.touched" [class.ng-dirty]="name?.dirty">
+            <small class="error-text" *ngIf="name?.invalid && name?.touched">
               Name is required
             </small>
           </div>
@@ -57,17 +82,9 @@
           <!-- Email Field -->
           <div class="form-field">
             <label for="email">Email <span class="required">*</span></label>
-            <input 
-              pInputText 
-              id="email"
-              type="email"
-              formControlName="email"
-              placeholder="Enter your email"
-              [class.ng-invalid]="email?.invalid && email?.touched"
-              [class.ng-dirty]="email?.dirty">
-            <small 
-              class="error-text" 
-              *ngIf="email?.invalid && email?.touched">
+            <input pInputText id="email" type="email" formControlName="email" placeholder="Enter your email"
+              [class.ng-invalid]="email?.invalid && email?.touched" [class.ng-dirty]="email?.dirty">
+            <small class="error-text" *ngIf="email?.invalid && email?.touched">
               <span *ngIf="email?.errors?.['required']">Email is required</span>
               <span *ngIf="email?.errors?.['email']">Please enter a valid email</span>
             </small>
@@ -76,19 +93,11 @@
           <!-- Password Field -->
           <div class="form-field">
             <label for="password">Password <span class="required">*</span></label>
-            <p-password 
-              id="password"
-              formControlName="password"
-              placeholder="Enter your password"
-              [toggleMask]="true"
-              [feedback]="false"
-              [class.ng-invalid]="password?.invalid && password?.touched"
-              [class.ng-dirty]="password?.dirty"
-              styleClass="full-width">
+            <p-password id="password" formControlName="password" placeholder="Enter your password" [toggleMask]="true"
+              [feedback]="false" [class.ng-invalid]="password?.invalid && password?.touched"
+              [class.ng-dirty]="password?.dirty" styleClass="full-width">
             </p-password>
-            <small 
-              class="error-text" 
-              *ngIf="password?.invalid && password?.touched">
+            <small class="error-text" *ngIf="password?.invalid && password?.touched">
               <span *ngIf="password?.errors?.['required']">Password is required</span>
               <span *ngIf="password?.errors?.['minlength']">Password must be at least 6 characters</span>
             </small>
@@ -97,34 +106,19 @@
           <!-- Tenant ID Field (Optional) -->
           <div class="form-field">
             <label for="tenantId">Tenant ID <span class="optional">(Optional)</span></label>
-            <input 
-              pInputText 
-              id="tenantId"
-              formControlName="tenantId"
-              placeholder="Enter tenant ID (optional)">
+            <input pInputText id="tenantId" formControlName="tenantId" placeholder="Enter tenant ID (optional)">
           </div>
 
           <!-- Role Field -->
           <div class="form-field dropdown-field">
             <label for="role">Role</label>
-            <p-dropdown 
-              id="role"
-              formControlName="role"
-              [options]="roleOptions"
-              optionLabel="label"
-              optionValue="value"
-              placeholder="Select role"
-              [showClear]="false"
-              styleClass="full-width"
-              [style]="{'width': '100%'}">
+            <p-dropdown id="role" formControlName="role" [options]="roleOptions" optionLabel="label" optionValue="value"
+              placeholder="Select role" [showClear]="false" styleClass="full-width" [style]="{'width': '100%'}">
             </p-dropdown>
           </div>
 
           <!-- Sign up Button -->
-          <button 
-            pButton 
-            type="submit" 
-            class="p-button login-button full-width"
+          <button pButton type="submit" class="p-button login-button full-width"
             [disabled]="isLoading || signupForm.invalid">
             <span *ngIf="isLoading">Signing up...</span>
             <span *ngIf="!isLoading">Sign up</span>
@@ -135,16 +129,10 @@
         <div class="divider">
           <span>OR</span>
         </div>
-        
+
         <!-- Google Sign up Button -->
-        <button 
-          pButton 
-          type="button" 
-          label="Sign up with Google" 
-          icon="pi pi-google"
-          class="p-button-outlined google-button"
-          [disabled]="isLoading"
-          (click)="onGoogleSignup()">
+        <button pButton type="button" label="Sign up with Google" icon="pi pi-google"
+          class="p-button-outlined google-button" [disabled]="isLoading" (click)="onGoogleSignup()">
         </button>
 
         <p class="signup-text">
@@ -154,4 +142,3 @@
     </div>
   </div>
 </div>
-

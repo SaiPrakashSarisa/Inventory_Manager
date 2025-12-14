@@ -8,15 +8,16 @@ import { PasswordModule } from 'primeng/password';
 import { DropdownModule } from 'primeng/dropdown';
 import { AuthService } from '../../services/auth.service';
 import { SignupRequest } from '../../models/auth.models';
+import { switchMap } from 'rxjs';
 
 @Component({
   selector: 'app-login',
   standalone: true,
   imports: [
-    CommonModule, 
+    CommonModule,
     ReactiveFormsModule,
-    ButtonModule, 
-    InputTextModule, 
+    ButtonModule,
+    InputTextModule,
     PasswordModule,
     DropdownModule
   ],
@@ -32,6 +33,11 @@ export class LoginComponent {
   isLoading = false;
   errorMessage = '';
 
+  loginForm: FormGroup = this.fb.group({
+    email: ['', [Validators.required, Validators.email]],
+    password: ['', Validators.required]
+  });
+
   signupForm: FormGroup = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required, Validators.minLength(6)]],
@@ -40,10 +46,24 @@ export class LoginComponent {
     role: ['staff'] // Default role
   });
 
-  constructor() {}
+  constructor() { }
 
   onLogin() {
-    this.router.navigate(['/dashboard']);
+    this.errorMessage = '';
+    this.isLoading = true;
+
+    const { email, password } = this.loginForm.value;
+
+    this.authService.loginWithEmail(email, password).subscribe({
+      next: () => {
+        this.isLoading = false;
+        this.router.navigate(['/dashboard']);
+      },
+      error: (err) => {
+        this.isLoading = false;
+        this.errorMessage = err.error?.message || 'Login failed';
+      }
+    });
   }
 
   onSignup() {
@@ -61,58 +81,34 @@ export class LoginComponent {
       };
 
       this.authService.signupWithEmail(signupData).subscribe({
-        next: (response) => {
-          if (response.success) {
-            // Store token if JWT
-            if (response.data.token) {
-              localStorage.setItem('token', response.data.token);
-            }
-            if (response.data.customToken) {
-              localStorage.setItem('customToken', response.data.customToken);
-            }
-            localStorage.setItem('user', JSON.stringify(response.data.user));
-            localStorage.setItem('loginMethod', response.data.loginMethod);
-            this.router.navigate(['/dashboard']);
-          } else {
-            this.errorMessage = response.message || 'Signup failed. Please try again.';
-            this.isLoading = false;
-          }
-        },
-        error: (error) => {
-          this.errorMessage = error.error?.message || error.message || 'Signup failed. Please try again.';
+        next: () => {
+          // If backend sets cookie on signup
           this.isLoading = false;
+          this.router.navigate(['/dashboard']);
+        },
+        error: (err) => {
+          this.isLoading = false;
+          this.errorMessage = err.error?.message || 'Signup failed. Try after some time.'
         }
       });
     } else {
       this.signupForm.markAllAsTouched();
     }
   }
-  
+
   onGoogleLogin() {
     this.isLoading = true;
-    this.errorMessage = '';
 
-    this.authService.signupWithGoogle().subscribe({
-      next: (response) => {
-        if (response.success) {
-          // Store token/customToken
-          if (response.data.token) {
-            localStorage.setItem('token', response.data.token);
-          }
-          if (response.data.customToken) {
-            localStorage.setItem('customToken', response.data.customToken);
-          }
-          localStorage.setItem('user', JSON.stringify(response.data.user));
-          localStorage.setItem('loginMethod', response.data.loginMethod);
-          this.router.navigate(['/dashboard']);
-        } else {
-          this.errorMessage = response.message || 'Google login failed. Please try again.';
-          this.isLoading = false;
-        }
-      },
-      error: (error) => {
-        this.errorMessage = error.error?.message || error.message || 'Google login failed. Please try again.';
+    this.authService.signInWithGoogle().pipe(
+      switchMap((idToken) => this.authService.loginWithFirebase(idToken))
+    ).subscribe({
+      next: () => {
         this.isLoading = false;
+        this.router.navigate(['/dashboard']);
+      },
+      error: (err) => {
+        this.isLoading = false;
+        this.errorMessage = err.error?.message || 'Google login failed'
       }
     });
   }
@@ -176,6 +172,14 @@ export class LoginComponent {
 
   get role() {
     return this.signupForm.get('role');
+  }
+
+  get loginEmail() {
+    return this.loginForm.get('email');
+  }
+
+  get loginPassword() {
+    return this.loginForm.get('password');
   }
 
   roleOptions = [

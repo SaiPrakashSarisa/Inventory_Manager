@@ -15,10 +15,12 @@ export class HeaderComponent {
   @Input() isCollapsed: boolean = false;
   @Output() toggleSidebar = new EventEmitter<void>();
 
+  user$ = this.authService.user$;
+
   constructor(
     private authService: AuthService,
     private router: Router
-  ) {}
+  ) { }
 
   onToggleSidebar() {
     this.toggleSidebar.emit();
@@ -27,10 +29,6 @@ export class HeaderComponent {
   onLogout() {
     this.authService.logout();
     this.router.navigate(['/login']);
-  }
-
-  getCurrentUser() {
-    return this.authService.getCurrentUser();
   }
 }
 

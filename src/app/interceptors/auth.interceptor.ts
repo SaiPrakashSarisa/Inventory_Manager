@@ -1,30 +1,24 @@
-import { HttpInterceptorFn } from '@angular/common/http';
+import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
-import { AuthService } from '../services/auth.service';
+import { Router } from '@angular/router';
+import { catchError, throwError } from 'rxjs';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
-  const authService = inject(AuthService);
+  const router = inject(Router);
 
-  // Skip adding token for auth endpoints
-  if (req.url.includes('/auth/login') || req.url.includes('/auth/signup')) {
-    return next(req);
-  }
+  // Always send cookies
+  const requestWithCredentials = req.clone({
+    withCredentials: true,
+  });
 
-  // Get token from auth service
-  const token = authService.getToken();
-  const loginMethod = authService.getLoginMethod();
-
-  // Clone the request and add the authorization header
-  if (token) {
-    const authReq = req.clone({
-      setHeaders: {
-        Authorization: `Bearer ${token}`,
-        ...(loginMethod && { 'X-Login-Method': loginMethod })
+  return next(requestWithCredentials).pipe(
+    catchError((error: HttpErrorResponse) => {
+      if (error.status === 401) {
+        // Session expired or Invalid token
+        router.navigate(['/login']);
       }
-    });
-    return next(authReq);
-  }
-
-  return next(req);
+      return throwError(() => error);
+    })
+  );
 };
 
