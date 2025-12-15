@@ -31,7 +31,7 @@
 }
 
 .app-title {
-  color: #ffffff;
+  color: #3c3c3cc9;
   font-size: 2rem;
   font-weight: 600;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
@@ -50,6 +50,7 @@
 .login-button {
   width: 100%;
   padding: 0.75rem 1.5rem;
+  margin-top: 1rem;
   justify-content: center;
   font-size: 1rem;
   border-radius: 8px;
@@ -89,45 +90,6 @@
 
 .google-button:active {
   transform: translateY(0);
-}
-
-.signup-text {
-  text-align: center;
-  color: rgb(104, 104, 104);
-  font-size: 0.875rem;
-  margin: 0;
-  text-shadow: 1px 1px 2px rgba(104, 104, 104, 0.3);
-}
-
-.signup-link {
-  color: #0095ff;
-  text-decoration: underline;
-  cursor: pointer;
-  font-weight: 600;
-  transition: opacity 0.2s ease;
-}
-
-.signup-link:hover {
-  opacity: 0.8;
-}
-
-.signup-link:active {
-  opacity: 0.6;
-}
-
-/* Signup Form Styles */
-.signup-form {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
-  background-color: rgba(255, 255, 255, 0.95);
-  padding: 2rem 1.5rem;
-  border-radius: 12px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
-  position: relative;
-  overflow: visible;
 }
 
 .form-field {
@@ -391,11 +353,6 @@
   
   .auth-buttons {
     max-width: 450px;
-  }
-
-  .signup-form {
-    padding: 2.25rem 2rem;
-    gap: 1.5rem;
   }
 
   .form-field {

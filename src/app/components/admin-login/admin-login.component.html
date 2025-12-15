@@ -1,0 +1,61 @@
+<div class="login-container">
+    <div class="login-content">
+        <div class="logo-section">
+            <h1 class="app-title">Inventory Manager Admin</h1>
+        </div>
+
+        <div class="auth-buttons">
+            <!-- Login Mode  -->
+            <ng-container *ngIf="!isSignupMode">
+                <form [formGroup]="loginForm" class="login-form" (ngSubmit)="onLogin()">
+
+                    <!-- Error Message -->
+                    <div *ngIf="errorMessage" class="error-message">
+                        <p>{{ errorMessage }}</p>
+                    </div>
+
+                    <!-- Email Field -->
+                    <div class="form-field">
+                        <label for="loginEmail">Email <span class="required">*</span></label>
+                        <input pInputText id="loginEmail" type="email" formControlName="email"
+                            placeholder="Enter your email"
+                            [class.ng-invalid]="loginEmail?.invalid && loginEmail?.touched">
+                        <small class="error-text" *ngIf="loginEmail?.invalid && loginEmail?.touched">
+                            <span *ngIf="loginEmail?.errors?.['required']">Email is required</span>
+                            <span *ngIf="loginEmail?.errors?.['email']">Enter a valid email</span>
+                        </small>
+                    </div>
+
+                    <!-- Password Field -->
+                    <div class="form-field">
+                        <label for="loginPassword">Password <span class="required">*</span></label>
+                        <p-password id="loginPassword" formControlName="password" placeholder="Enter your password"
+                            [toggleMask]="true" [feedback]="false" styleClass="full-width">
+                        </p-password>
+                        <small class="error-text" *ngIf="loginPassword?.invalid && loginPassword?.touched">
+                            <span *ngIf="loginPassword?.errors?.['required']">Password is required</span>
+                        </small>
+                    </div>
+
+                    <!-- Login Button -->
+                    <button pButton type="submit" class="p-button login-button full-width"
+                        [disabled]="isLoading || loginForm.invalid">
+                        <span *ngIf="isLoading">Logging in...</span>
+                        <span *ngIf="!isLoading">Login</span>
+                    </button>
+                </form>
+
+                <!-- Divider -->
+                <!-- <div class="divider">
+                    <span>OR</span>
+                </div> -->
+
+                <!-- Google Login -->
+                <!-- We will use this in future if needed  -->
+                <!-- <button pButton type="button" label="Continue with Google" icon="pi pi-google"
+                    class="p-button-outlined google-button" [disabled]="isLoading" (click)="onGoogleLogin()">
+                </button> -->
+            </ng-container>
+        </div>
+    </div>
+</div>
